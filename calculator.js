@@ -20,7 +20,9 @@ function clickHandler() {
 
 function addNumberToEquation() {
 	var numberClicked = $(this).text();
-	if (doMathArray.length === 0) {
+	if (doMathArray.length === 0 && numberClicked === "0"){
+		$(".display").text(numberClicked);
+	} else if (doMathArray.length === 0) {
 		doMathArray.push(numberClicked);
 		$(".display").text(doMathArray[doMathArray.length-1]);
 	} else if (doMathArray[doMathArray.length-1] === "0.") {
@@ -29,6 +31,8 @@ function addNumberToEquation() {
 	} else if (Number(doMathArray[doMathArray.length-1])){
 		doMathArray[doMathArray.length-1] += numberClicked;
 		$(".display").text(doMathArray[doMathArray.length-1]);
+	} else if (!Number(doMathArray[doMathArray.length-1]) && numberClicked === "0"){
+		$(".display").text(numberClicked);
 	} else if (!Number(doMathArray[doMathArray.length-1])){
 		doMathArray.push(numberClicked);
 		$(".display").text(doMathArray[doMathArray.length-1]);
@@ -44,6 +48,9 @@ function addDecimalToEquation() {
 	$(".clicked").removeClass("clicked");
 	if (doMathArray.length === 0) {
 		doMathArray.push("0" + decimalClicked);
+		$(".display").text(doMathArray[doMathArray.length-1]);
+	} else if (doMathArray[doMathArray.length-1] === "0"){
+		doMathArray[doMathArray.length-1] += decimalClicked;
 		$(".display").text(doMathArray[doMathArray.length-1]);
 	} else if (Number(doMathArray[doMathArray.length-1])){
 		doMathArray[doMathArray.length-1] += decimalClicked;
@@ -70,7 +77,7 @@ function addOperatorToEquation() {
 		if ( operatorClicked === "*" ) {
 			$(".display").text("x");
 		} else if ( operatorClicked === "/" ) {
-			$(".display").text("÷");
+			$(".display").text("Ã·");
 		} else {
 			$(".display").text(doMathArray[doMathArray.length-1]);
 		}
@@ -86,11 +93,11 @@ function equalCheck () {
 	} else if (doMathArray.length-1 === 0) {
 		var result = doMathArray[doMathArray.length-1];
 		$(".display").text(result);
+	} else if (doMathArray[doMathArray.length-1] === "/" && displayValue === "0"){
+		$(".display").text("Error");
 	} else if (doMathArray.length-1 === 1){
 		doMathArray.push(doMathArray[doMathArray.length-2]);
 		doMath(doMathArray);
-	} else if (doMathArray[doMathArray.length-1] === "0" && doMathArray[doMathArray.length-2] === "/"){
-		$(".display").text("Error");
 	} else if (doMathArray.length > 3) {
 		var splicedArray = doMathArray.splice(0,3);
 		result = doMath(splicedArray);
@@ -98,13 +105,19 @@ function equalCheck () {
 		doMathArray.splice(0, 0, resultToString);
 		equalCheck();
 	} else if (doMath(doMathArray).toString() === displayValue) {
-		if (doMathArray.length === 3) {
-			doMathArray.splice(0, 1, displayValue);
-			doMath(doMathArray);
-		} else if (doMathArray.length > 3) {
-			doMathArray.splice(0, doMathArray[doMathArray.length-2], displayValue);
-			doMath(doMathArray);
-		}
+    if (doMathArray.length === 3) {
+                if (doMathArray[1] === "*") {
+                    if (doMathArray[0] === 1 || doMathArray[2] === 1){
+                        doMath(doMathArray);
+                    }
+                } else {
+                    doMathArray.splice(0, 1, displayValue);
+                    doMath(doMathArray);
+                }
+            } else if (doMathArray.length > 3) {
+                doMathArray.splice(0, doMathArray[doMathArray.length-2], displayValue);
+                doMath(doMathArray);
+            }
 	} else {
 		doMath(doMathArray);
 	}
@@ -118,6 +131,8 @@ function doMath ( array ) {
 		result = array[0] - array[2];
 	} else if (array[1] === "*") {
 		result = array[0] * array[2];
+	} else if (array[1] === "/" && array[2] === "0"){
+		result = "Error";
 	} else if (array[1] === "/") {
 		result = array[0] / array[2];
 	}
