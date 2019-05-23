@@ -157,6 +157,10 @@ function clearMathArray () {
 function makeNegative (){
 	var lastNum = doMathArray.pop();
 	var negNumber = lastNum*-1;
-	doMathArray.push(negNumber);
-    $(".display").text(negNumber)
+    if(isNaN(negNumber)){
+         $(".display").text("0");
+    } else {    
+        doMathArray.push(negNumber);
+        $(".display").text(negNumber);
+    }
 }
