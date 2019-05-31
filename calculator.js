@@ -121,8 +121,8 @@ function equalCheck () {
 	} else {
 		doMath(doMathArray);
 	}
-
 }
+
 
 function doMath ( array ) {
 	if (array[1] === "+") {
@@ -136,7 +136,11 @@ function doMath ( array ) {
 	} else if (array[1] === "/") {
 		result = array[0] / array[2];
 	}
-	$(".display").text(result);
+    var displayedResult = Number(result.toPrecision(10));
+	$(".display").text(displayedResult);
+    if (isNaN(result)) {
+        $(".display").text("Error");
+    }
 	decimalToggle = false;
 	return result;
 }
